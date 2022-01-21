@@ -95,3 +95,110 @@ def usersignup_view(request):
 
     return HttpResponse(json.dumps(response_status),content_type="application/json")
 
+def requestreferral_view(request):
+
+    print("inside requestreferral view")
+
+    received_parameters = {}
+    received_parameters['name'] = request.GET.get('name',None)
+    received_parameters['univeristy'] = request.GET.get('university',None)
+    received_parameters['email'] = request.GET.get('email',None)
+    received_parameters['reason'] = request.GET.get('reason',None)
+
+    return HttpResponse(json.dumps(received_parameters),content_type="application/json")
+
+
+def showreferral_view(request):
+
+    print("Inside showreferral view")
+
+    
+    try:
+        username = request.META['HTTP_USERNAME']
+        password = request.META['HTTP_PASSWORD']
+
+    except:
+        error_message = {}
+        error_message['message'] = 'Could not find username/password in headers'
+        return HttpResponse(json.dumps(error_message),content_type='application/json')
+
+    
+
+    response_status = {}
+    response_status['message'] = 'Right now you are inside'
+
+    return HttpResponse(json.dumps(response_status),content_type="application/json")
+
+def registerevent_view(request):
+
+    print("Inside addevent view")
+
+    
+    try:
+        username = request.META['HTTP_USERNAME']
+        password = request.META['HTTP_PASSWORD']
+
+    except:
+        error_message = {}
+        error_message['message'] = 'Could not find username/password in headers'
+        return HttpResponse(json.dumps(error_message),content_type='application/json')
+
+    received_parameters = {}
+    received_parameters['event_name'] = request.GET.get('event_name',None)
+    received_parameters['event_code'] = request.GET.get('event_code',None)
+    received_parameters['content'] = request.GET.get('content',None)
+    
+
+    response_status = {}
+    response_status['message'] = 'Right now you are inside'
+
+    return HttpResponse(json.dumps(received_parameters),content_type="application/json")
+
+def addcertificate_view(request):
+
+    print("Inside addcertificate view")
+
+    
+    try:
+        username = request.META['HTTP_USERNAME']
+        password = request.META['HTTP_PASSWORD']
+
+    except:
+        error_message = {}
+        error_message['message'] = 'Could not find username/password in headers'
+        return HttpResponse(json.dumps(error_message),content_type='application/json')
+
+    received_parameters = {}
+    received_parameters['participant_name'] = request.GET.get('participant_name',None)
+    received_parameters['participant_id'] = request.GET.get('participant_id',None)
+    
+
+    response_status = {}
+    response_status['message'] = 'Right now you are inside'
+
+    return HttpResponse(json.dumps(received_parameters),content_type="application/json")
+
+
+def emailcertificate_view(request):
+
+    print("inside emailcertificate view")
+
+    received_parameters = {}
+    received_parameters['name'] = request.GET.get('name',None)
+    received_parameters['university'] = request.GET.get('university',None)
+    received_parameters['event_code'] = request.GET.get('event_code',None)
+    received_parameters['participant_id'] = request.GET.get('participant_id',None)
+    received_parameters['email'] = request.GET.get('email',None)
+
+
+    # return HttpResponse(json.dumps(received_parameters),content_type='application/json') #Data Received
+
+    #To-do
+    #Add authentication headers
+    #Add database
+    #Verify against database
+    #Return the Url feteched, Firebase Storage or Postgres
+
+    return HttpResponse(json.dumps(received_parameters),content_type="application/json")
+
+    return HttpResponse("Data Received, no errors, database not added, will let you know if certificate if found, will send data")
