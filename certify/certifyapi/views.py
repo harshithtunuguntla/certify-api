@@ -169,6 +169,7 @@ def addcertificate_view(request):
         return HttpResponse(json.dumps(error_message),content_type='application/json')
 
     received_parameters = {}
+    received_parameters['event_code'] = request.GET.get('event_code',None)
     received_parameters['participant_name'] = request.GET.get('participant_name',None)
     received_parameters['participant_id'] = request.GET.get('participant_id',None)
     
