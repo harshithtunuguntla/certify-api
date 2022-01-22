@@ -1,19 +1,22 @@
 from io import BytesIO
 import base64
-from . import config
+import config
 import pyrebase
 from PIL import Image
 from PIL import ImageDraw, ImageFont
 # import requests
 
 
+font_path = "media/fonts/MonoLisa-Black.ttf"
+font = ImageFont.truetype(font_path, 60)
 
+img = Image.open('media/images/certificate.png')
 
-
-
-# img.show()
+I1 = ImageDraw.Draw(img)
+I1.text((610, 740), "Hakuna Matata", font=font, fill=(0, 0, 0))
+img.show()
 # img.save('result.png')
-# print(img)
+print(img)
 
 
 firebaseConfig = {
@@ -33,10 +36,13 @@ firebase = pyrebase.initialize_app(firebaseConfig)
 storage = firebase.storage()
 
 metadata = '"contentType": "image/jpeg" "size":"262144"'
-filepath = "official_certificates/"
-
 # metadata = '"contentType": "image/jpeg","size":"262144"'
 # metadata = {"size":262144}
+
+
+filepath = "cers/" 
+
+
 # storage.child(filepath).put("media/images/certificate.png",metadata)
 
 # bucket = "imageupload-19537"
@@ -77,30 +83,18 @@ filepath = "official_certificates/"
 # -------------------------
 
 
-def generate_certificate(uid_number,name,storage_path):
+img = img.convert('RGB')
 
-    font_path = "media/fonts/MonoLisa-Black.ttf"
-    font = ImageFont.truetype(font_path, 60)
+buffered = BytesIO()
+img.save(buffered, format="PNG")
+img_str = base64.b64encode(buffered.getvalue())
+img_str = base64.b64decode(img_str)
 
 
-    img = Image.open('media/images/certificate.png')
-    I1 = ImageDraw.Draw(img)
-    I1.text((610, 740), name, font=font, fill=(0, 0, 0))
+print(img_str)
 
-    img = img.convert('RGB')
+storage.child("new.png").put(img_str, metadata)
 
-    buffered = BytesIO()
-    img.save(buffered, format="PNG")
-    img_str = base64.b64encode(buffered.getvalue())
-    img_str = base64.b64decode(img_str)
+img_url = storage.child("cers/new.png").get_url(None)
 
-    filename = str(uid_number)+".png"
-
-    new_file_path = storage_path+filename
-    print(new_file_path)
-
-    storage.child(new_file_path).put(img_str, metadata)
-    img_url = storage.child(new_file_path).get_url(None)
-
-    return img_url
-
+print(img_url)

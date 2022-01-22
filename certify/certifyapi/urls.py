@@ -12,9 +12,15 @@ urlpatterns = [
     path('usersignup',views.usersignup_view,name="usersignup"),
     path('requestreferral',views.requestreferral_view,name="requestreferral"),
     path('showreferral',views.showreferral_view,name="showreferral"),
+    path('showapi',views.showapi_view,name="showapi"),
     path('registerevent',views.registerevent_view,name="registerevent"),
     path('addcertificate',views.addcertificate_view,name="addcertificate"),
+    path('getevents',views.getevents_view,name="getevents"),
+    path('geteventcertificates',views.geteventcertificates_view,name="geteventcertificates"),
+
+
     path('emailcertificate',views.emailcertificate_view,name="emailcertificate"),
+
 
 
 
