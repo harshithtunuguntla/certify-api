@@ -1,4 +1,5 @@
 from importlib.resources import contents
+from turtle import position
 from django.http import HttpResponse
 from django.shortcuts import render
 import json
@@ -42,6 +43,10 @@ def verifycertificate_view(request):
         success_message = {}
         success_message['Certificate Status'] = "Verified"
         success_message['Participant Name'] = certificateobj[0].participant_name
+        success_message['Date Issued'] = certificateobj[0].date_issued
+        success_message['Content'] = certificateobj[0].content
+        success_message['Position'] = certificateobj[0].position
+
         # success_message['username'] = certificateobj
         return HttpResponse(json.dumps(success_message),content_type='application/json') 
 
@@ -232,7 +237,7 @@ def requestreferral_view(request):
 
     success_message = {}
     success_message['message'] = 'Your referral code is generated and is under pending state, we will get back to you once it is generated. This is a normal check to keep server from spamming. You will receive a mail if we found its legit.'
-    
+    success_message['referral_code'] = new_referral_code
     # send_mail(
     #     received_parameters['name'],
     #     'Your Referral Token has been succesfully genenerated' + new_referral_code,
@@ -428,7 +433,7 @@ def addcertificate_view(request):
             received_parameters['participant_name'] = request.GET.get('participant_name',None)
             received_parameters['participant_id'] = request.GET.get('participant_id',None)
             received_parameters['content'] = request.GET.get('content',None)
-            received_parameters['position'] = request.GET.get('content',None)
+            received_parameters['position'] = request.GET.get('position',None)
 
 
 
@@ -489,9 +494,15 @@ def addcertificate_view(request):
                     
                     else:
                         
-                        certificate_url = testing_images.generate_certificate(uid_number,received_parameters['participant_name'],"off/",received_parameters['content'],received_parameters['position'])
+                        eventobj = Events.objects.filter(event_code=received_parameters['event_code'])
+                        template_number = str(eventobj[0].template_number)
 
-                        certificate = Certificates.objects.create(uid_number=uid_number,event_code=received_parameters['event_code'],participant_name=received_parameters['participant_name'],participant_id=received_parameters['participant_id'],certificate_link=certificate_url)
+                        print(template_number)
+                        print(received_parameters['position'])
+
+                        certificate_url,date_issued = testing_images.generate_certificate(uid_number,received_parameters['participant_name'],"off/",received_parameters['content'],received_parameters['position'],template_number)
+
+                        certificate = Certificates.objects.create(uid_number=uid_number,event_code=received_parameters['event_code'],participant_name=received_parameters['participant_name'],participant_id=received_parameters['participant_id'],certificate_link=certificate_url,date_issued=date_issued,content=received_parameters['content'],position=received_parameters['position'])
                         certificate.save()
 
                         event_cert = Event_Certificates.objects.create(event_code=received_parameters['event_code'],uid_number=uid_number)

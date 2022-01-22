@@ -1,11 +1,18 @@
 from io import BytesIO
 import base64
+from re import template
+from turtle import position
 from . import config
+# import config
+
 import pyrebase
 from PIL import Image
 from PIL import ImageDraw, ImageFont
-# import requests
 
+import qrcode
+# import requests
+from datetime import date
+today = date.today()
 
 
 
@@ -77,30 +84,140 @@ filepath = "official_certificates/"
 # -------------------------
 
 
-def generate_certificate(uid_number,name,storage_path):
+def generate_certificate(uid_number,name,storage_path,content_to_write,acheived_position,template_number):
 
-    font_path = "media/fonts/MonoLisa-Black.ttf"
-    font = ImageFont.truetype(font_path, 60)
+    monolisa_font_path = "media/fonts/MonoLisa-Black.ttf"
+    arial_font_path = "media/fonts/arial.ttf"
+    namefont = ImageFont.truetype(monolisa_font_path, 60)
+    detailsfont = ImageFont.truetype(arial_font_path, 30)
+
+    d4 = today.strftime("%b-%d-%Y")
 
 
-    img = Image.open('media/images/certificate.png')
-    I1 = ImageDraw.Draw(img)
-    I1.text((610, 740), name, font=font, fill=(0, 0, 0))
 
-    img = img.convert('RGB')
 
-    buffered = BytesIO()
-    img.save(buffered, format="PNG")
-    img_str = base64.b64encode(buffered.getvalue())
-    img_str = base64.b64decode(img_str)
 
-    filename = str(uid_number)+".png"
+    if(template_number=="1"):
+        
+        img = Image.open('media/images/certificate1.png')
 
-    new_file_path = storage_path+filename
-    print(new_file_path)
 
-    storage.child(new_file_path).put(img_str, metadata)
-    img_url = storage.child(new_file_path).get_url(None)
+        I1 = ImageDraw.Draw(img)
+        I1.text((610, 740), name, font=namefont, fill=(0, 0, 0))
+        I1.text((500, 840), content_to_write, font=detailsfont, fill=(0, 0, 0))
+        # print("d4 =", d4)
+        I1.text((440, 1130), d4, font=detailsfont, fill=(0, 0, 0))
 
-    return img_url
 
+        print('came')
+        if(acheived_position!=None):
+            new_c = "Standing at position '" + acheived_position + "'"
+            print('--------------------')
+            print(new_c)
+            print('--------------------')
+
+            I1.text((865, 900), new_c, font=detailsfont, fill=(0, 0, 0))
+        print('passed by')
+
+
+        qr = qrcode.QRCode(box_size=6)
+        verification_link = "http://127.0.0.1:8000/verifycertificate?uid_number=" + uid_number
+        qr.add_data(verification_link)
+
+        qr.make()
+        img_qr = qr.make_image(fill_color="#000000", back_color="#F8F7F2")
+
+        print(img_qr.size)
+        pos = (img.size[0] - 1120, img.size[1] - 390)
+        img.paste(img_qr, pos)
+
+        img = img.convert('RGB')
+
+        buffered = BytesIO()
+        img.save(buffered, format="PNG")
+        img_str = base64.b64encode(buffered.getvalue())
+        img_str = base64.b64decode(img_str)
+
+        filename = str(uid_number)+".png"
+
+        new_file_path = storage_path+filename
+        print(new_file_path)
+
+        storage.child(new_file_path).put(img_str, metadata)
+        img_url = storage.child(new_file_path).get_url(None)
+
+        return img_url, d4
+
+        # img.show()
+    
+    if(template_number=="2"):
+    
+        img = Image.open('media/images/certificate2.png')
+
+
+        I1 = ImageDraw.Draw(img)
+        I1.text((610, 740), name, font=namefont, fill=(0, 0, 0))
+        I1.text((500, 840), content_to_write, font=detailsfont, fill=(0, 0, 0))
+        I1.text((360, 1120), d4, font=detailsfont, fill=(0, 0, 0))
+
+        print('came')
+        if(acheived_position!=None):
+            new_c = "Standing at position '" + acheived_position + "'"
+            print('--------------------')
+            print(new_c)
+            print('--------------------')
+
+            I1.text((865, 900), new_c, font=detailsfont, fill=(0, 0, 0))
+        print('passed by')
+
+
+        qr = qrcode.QRCode(box_size=6)
+        verification_link = "http://127.0.0.1:8000/verifycertificate?uid_number=" + uid_number
+        qr.add_data(verification_link)
+
+        qr.make()
+        img_qr = qr.make_image(fill_color="#000000", back_color="#F8F7F2")
+
+        print(img_qr.size)
+        pos = (img.size[0] - 1120, img.size[1] - 390)
+        img.paste(img_qr, pos)
+
+        # img.show()
+        img = img.convert('RGB')
+
+        buffered = BytesIO()
+        img.save(buffered, format="PNG")
+        img_str = base64.b64encode(buffered.getvalue())
+        img_str = base64.b64decode(img_str)
+
+        filename = str(uid_number)+".png"
+
+        new_file_path = storage_path+filename
+        print(new_file_path)
+
+        storage.child(new_file_path).put(img_str, metadata)
+        img_url = storage.child(new_file_path).get_url(None)
+
+        return img_url, d4
+
+
+
+    # img = img.convert('RGB')
+
+    # buffered = BytesIO()
+    # img.save(buffered, format="PNG")
+    # img_str = base64.b64encode(buffered.getvalue())
+    # img_str = base64.b64decode(img_str)
+
+    # filename = str(uid_number)+".png"
+
+    # new_file_path = storage_path+filename
+    # print(new_file_path)
+
+    # storage.child(new_file_path).put(img_str, metadata)
+    # img_url = storage.child(new_file_path).get_url(None)
+
+    # return img_url, d4
+
+
+# generate_certificate("d19929ccd19c43b9c0a9","Harshith Sai Tunuguntla","off/","For winning in Line Follower Competetion conducted by Robotics Club","1","2")

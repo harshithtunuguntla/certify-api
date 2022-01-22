@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.forms import IntegerField
+
 # Create your models here.
 class Referrals(models.Model):
     name = models.CharField(max_length=200)
@@ -44,6 +45,10 @@ class Certificates(models.Model):
     participant_id = models.TextField()
     participant_name = models.TextField()
     certificate_link = models.TextField()
+    date_issued = models.TextField()
+    content = models.TextField()
+    position = models.TextField(null=True)
+
 
 
     
