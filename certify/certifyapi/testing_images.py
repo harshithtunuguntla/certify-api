@@ -1,5 +1,9 @@
+from io import BytesIO
+import base64
+import config
+import pyrebase
 from PIL import Image
-from PIL import ImageDraw,ImageFont
+from PIL import ImageDraw, ImageFont
 # import requests
 
 
@@ -9,14 +13,11 @@ font = ImageFont.truetype(font_path, 60)
 img = Image.open('media/images/certificate.png')
 
 I1 = ImageDraw.Draw(img)
-I1.text((610, 740), "Harshith Sai Tunuguntla",font=font, fill=(0, 0, 0))
+I1.text((610, 740), "Harshith Sai Tunuguntla", font=font, fill=(0, 0, 0))
 img.show()
 # img.save('result.png')
 print(img)
 
-
-import pyrebase
-import config
 
 firebaseConfig = {
     "apiKey": config.apiKey,
@@ -39,10 +40,7 @@ metadata = '"contentType": "image/jpeg" "size":"262144"'
 # metadata = {"size":262144}
 
 
-
-
 filepath = "cer/" + "cert1"
-
 
 
 # storage.child(filepath).put("media/images/certificate.png",metadata)
@@ -83,14 +81,13 @@ filepath = "cer/" + "cert1"
 # blob.upload_from_filename(filename=img)
 
 # -------------------------
-import base64
-from io import BytesIO
 
 
 img = img.convert('RGB')
 
 buffered = BytesIO()
-img.save(buffered, format="JPEG")
+img.save(buffered, format="PNG")
 img_str = base64.b64encode(buffered.getvalue())
+img_str = base64.b64decode(img_str)
 
-storage.child("certifff").put(img_str,metadata)
+storage.child("new.png").put(img_str, metadata)

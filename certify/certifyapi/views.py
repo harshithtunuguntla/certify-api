@@ -1,7 +1,18 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 import json
+import secrets
 
+
+from django.contrib import auth
+
+
+#Importing Databases
+from certifyapi.models import Referrals, UserData
+from django.contrib.auth.models import User
+
+
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -65,6 +76,25 @@ def verifyuser_view(request):
     # If username and password matched -> return sucess
     # Else return invalid credentials -> account not exists/they dont match
 
+    if User.objects.filter(username=username).exists():
+        user=auth.authenticate(username=username,password=password)
+
+        if user is not None:
+            success_message = {}
+            success_message['message'] = 'User Succesfully Verified'
+            return HttpResponse(json.dumps(success_message),content_type='application/json')
+        else:
+            error_message = {}
+            error_message['message'] = 'Invalid Credentials'
+            return HttpResponse(json.dumps(error_message),content_type='application/json')
+
+
+    else:
+        error_message = {}
+        error_message['message'] = 'User Data Not Found!!!!'
+        return HttpResponse(json.dumps(error_message),content_type='application/json')
+
+
     verification_status = {}
     verification_status['message'] = 'Right now you are inside'
 
@@ -72,7 +102,6 @@ def verifyuser_view(request):
     
 def usersignup_view(request):
     print("inside user signup view")
-
 
     try:
         username = request.META['HTTP_USERNAME']
@@ -86,6 +115,39 @@ def usersignup_view(request):
     received_parameters = {}
     received_parameters['name'] = request.GET.get('name',None)
     received_parameters['referral_code'] = request.GET.get('referral_code',None)
+
+    if Referrals.objects.filter(referral_code=received_parameters['referral_code']).exists():
+
+        if User.objects.filter(username=username).exists():
+            error_message = {}
+            error_message['message'] = 'The username already exists, try another one'
+            return HttpResponse(json.dumps(error_message),content_type='application/json')
+
+        else:
+
+            user = User.objects.create_user(username=username,password=password,first_name=received_parameters['name'])
+            user.save()
+            
+            api_key = secrets.token_hex(16)
+
+
+            while UserData.objects.filter(api_key=api_key).exists():
+                api_key = secrets.token_hex(16)
+
+
+            userdata = UserData.objects.create(api_key=api_key,referral_code=received_parameters['referral_code'],username=user.username)
+            userdata.save()
+
+            success_message = {}
+            success_message['message'] = 'User Succesfully Created'
+            return HttpResponse(json.dumps(success_message),content_type='application/json')
+
+    else:
+        error_message = {}
+        error_message['message'] = 'The referral code doesnot exists, please provide valid one'
+        return HttpResponse(json.dumps(error_message),content_type='application/json')
+
+
 
     #Do the logic to add user to an organisation based on referral code, if referral code not found do necessary things etx
 
@@ -101,11 +163,30 @@ def requestreferral_view(request):
 
     received_parameters = {}
     received_parameters['name'] = request.GET.get('name',None)
-    received_parameters['univeristy'] = request.GET.get('university',None)
+    received_parameters['university'] = request.GET.get('university',None)
     received_parameters['email'] = request.GET.get('email',None)
     received_parameters['reason'] = request.GET.get('reason',None)
 
-    return HttpResponse(json.dumps(received_parameters),content_type="application/json")
+    new_referral_code = secrets.token_hex(8)
+    while Referrals.objects.filter(referral_code=new_referral_code).exists():
+        new_referral_code = secrets.token_hex(8)
+
+
+    referral = Referrals.objects.create(name=received_parameters['name'],university=received_parameters['university'],email=received_parameters['email'],reason=received_parameters['email'],referral_code=new_referral_code)
+    referral.save()
+
+    success_message = {}
+    success_message['message'] = 'Your referral code is generated and is under pending state, we will get back to you once it is generated. This is a normal check to keep server from spamming. You will receive a mail if we found its legit.'
+    
+    # send_mail(
+    #     received_parameters['name'],
+    #     'Your Referral Token has been succesfully genenerated' + new_referral_code,
+    #     "harshithtunuguntla@gmail.com",
+    #     received_parameters['email'],
+    # )
+    
+    return HttpResponse(json.dumps(success_message),content_type='application/json')
+
 
 
 def showreferral_view(request):
