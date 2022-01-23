@@ -18,13 +18,8 @@ urlpatterns = [
     path('getevents',views.getevents_view,name="getevents"),
     path('geteventcertificates',views.geteventcertificates_view,name="geteventcertificates"),
 
-
     path('emailcertificate',views.emailcertificate_view,name="emailcertificate"),
-
-
-
-
-
+    path('',views.homepage_view,name="homepage"),
 
 
     ]

@@ -14,7 +14,7 @@ img = Image.open('media/images/certificate.png')
 
 I1 = ImageDraw.Draw(img)
 I1.text((610, 740), "Hakuna Matata", font=font, fill=(0, 0, 0))
-img.show()
+# img.show()
 # img.save('result.png')
 print(img)
 
