@@ -9,11 +9,9 @@ This project is an API where people can integrate in their web app to generate, 
 ## Demo
 
 [![Certify-API Video Demonstration](https://img.youtube.com/vi/UsL6_NSX2Ew/0.jpg)](https://www.youtube.com/watch?v=UsL6_NSX2Ew)
+https://youtu.be/UsL6_NSX2Ew
 
-
-## Visit Link
-
-Checkout the explantion here : https://youtu.be/UsL6_NSX2Ew
+## Visit Links
 
 Canva Presentation : https://www.canva.com/design/DAE2PhZdoFM/IpYgPhAU1b96OUDdgbrwMw/view?utm_content=DAE2PhZdoFM&utm_campaign=designshare&utm_medium=link&utm_source=sharebutton
 
