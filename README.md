@@ -7,7 +7,7 @@ This project is an API where people can integrate in their web app to generate, 
 ## Certify API 
 
 Link : https://harshithcertify.herokuapp.com/
-(You can make api calls to this API and generate certificates..😁)
+(You can make api calls to this website and use it 😁. Refer the documentation for more info!)
 
 ## Demo
 
